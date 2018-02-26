@@ -84,10 +84,9 @@ var callback = function(){
 
         // 신청곡 성공
     		else{
-    			const [command, artist, ...titles] = inputs;
-	    		var title = titles.join(' ');
-	    		var index = allSongs.length + 1;
-		    	allSongs.push(artist + " - " + title);
+    			const [command, ...info] = inputs;
+	    		var artistTitle = info.join(' ');
+		    	allSongs.push(artistTitle);
 		    	empty.value = "SYSTEM: 신청곡을 받았습니다.";
 	    		button.click();
 	    	}
@@ -96,7 +95,7 @@ var callback = function(){
 
     // 설명서
     else if(newmessage == "?신청곡"){
-    	empty.value = "SYSTEM: 다음 양식으로 신청해주세요 -> {@신청곡} {아티스트} {제목}"
+    	empty.value = "SYSTEM: 다음 양식으로 신청해주세요 (\"\" 없이):\n@신청곡 \"아티스트 및 제목\""
     	button.click();
     }
 
