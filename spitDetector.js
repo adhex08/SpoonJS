@@ -15,29 +15,37 @@ var callback = function(){
 	// Find send button
 	var button = document.querySelector('[ng-click="addChat()"]');
 
-    console.log(newmessage);
+  inputs = newmessage.split(" ");
+    
+  console.log(newmessage);
     
     if (newmessage.startsWith("@신청곡")){
-    	inputs = newmessage.split(" ");
 
     	// 짧은 명령어
 
     	if(inputs.length == 2){
-    		if(inputs[1] == "목록"){
+
+        // 목록    		
+        if(inputs[1] == "목록"){
     			for(var i = 0; i < allSongs.length; i++){
     				var j = i+1;
     				empty.value = empty.value + j.toString() + ". " + allSongs[i] + "\n";
     			}
-    			if( empty.value == ""){
+    			// 목록이 비어있는 경우
+          if( empty.value == ""){
     				empty.value = "SYSTEM: 현재 신청곡 목록이 비어있습니다.";
     			}
     			button.click();
     		}
+
+        // 리셋
     		else if(inputs[1] == "리셋"){
     			allSongs = [];
     			empty.value = "SYSTEM: 신청곡 목록이 리셋되었습니다.";
     			button.click();
     		}
+
+        // 다음곡
     		else if(inputs[1] == "다음곡"){
     			const[front, ...rest] = allSongs;
     			currentSong = front;
@@ -45,10 +53,14 @@ var callback = function(){
     			empty.value = "SYSTEM: 재생중: " + currentSong;
     			button.click();
     		}
+
+        // 현재곡
     		else if(inputs[1] == "현재곡"){
     			empty.value = "SYSTEM: 재생중: " + currentSong;
     			button.click();
     		}
+
+        // 에러
     		else{
     			empty.value = "SYSTEM: 양식이 올바르지 않습니다. ?신청곡에서 확인해주세요.";
     			button.click();
@@ -63,10 +75,14 @@ var callback = function(){
 
     	// 실제 신청곡 받는 패턴
     	else{
-    		if(allSongs.length == 5){
+    		
+        // 신청곡 가득 참
+        if(allSongs.length == 5){
     			empty.value = "SYSTEM: 현재 신청곡이 가득 차있습니다. 다음에 다시 시도해주시길 바랍니다."
 		    	button.click();
     		}
+
+        // 신청곡 성공
     		else{
     			const [command, artist, ...titles] = inputs;
 	    		var title = titles.join(' ');
