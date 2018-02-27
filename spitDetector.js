@@ -22,23 +22,27 @@ function searchSong(){
   var results = jsonResponse.items;
   console.log(results);
 
-  // Find input message
-  var empty = document.querySelector(".input-live-chat");
+  // // Find input message
+  // var empty = document.querySelector(".input-live-chat");
       
-  // Find send button
-  var button = document.querySelector('[ng-click="addChat()"]');
+  // // Find send button
+  // var button = document.querySelector('[ng-click="addChat()"]');
 
+  // results.forEach(function(thing){
+  //   empty.value = empty.value + thing.snippet.title + "\n";
+  //   // console.log(thing.id.videoId);
+  // })
 
-  results.forEach(function(thing){
-    empty.value = empty.value + thing.snippet.title + "\n";
-    // console.log(thing.id.videoId);
-  })
+  // button.click();
 
-  // player.cueVideoById(results[0].id.videoId);
+  // The number can change according to which youtube video is what you want
+  startVideo(results[0].id.videoId);
 
-  button.click();
+}
 
-  // player.playVideo();
+function startVideo(videoid){
+  player.cueVideoById(videoid);
+  player.playVideo();
 }
 
 function loadPlayer() { 
@@ -66,8 +70,8 @@ function loadPlayer() {
       
 function onYouTubePlayer() {
   player = new YT.Player('player', {
-  height: '390',
-  width: '640',
+  height: '0',
+  width: '0',
   videoId: '',
   playerVars: { controls:1, showinfo: 0, rel: 0, showsearch: 0, iv_load_policy: 3 },
   events: {
@@ -78,8 +82,23 @@ function onYouTubePlayer() {
 }
 
 function onPlayerStateChange(event) {
-  if(YT.PlayerState.ENDED){
-    console.log("Hi");
+  if (event.data === 0){
+      // Find input message
+      var empty = document.querySelector(".input-live-chat");
+      // Find send button
+      var button = document.querySelector('[ng-click="addChat()"]');
+      if (allSongs.length == 0){
+            empty.value = "SYSTEM: 신청곡 목록이 비어있습니다.\n듣고 싶은 곡을 신청해주세요."
+            button.click();
+      }
+      else{
+        const[front, ...rest] = allSongs;
+        currentSong = front;
+        allSongs = rest;
+        empty.value = "SYSTEM: 재생중: " + currentSong;
+        button.click();
+        searchSong();
+      }
   }
 }
 
@@ -127,7 +146,6 @@ var callback = function(){
   // }
 
     if (newmessage.startsWith("@")){
-
     	// 짧은 명령어
 
     	if(inputs.length == 1){
@@ -147,7 +165,7 @@ var callback = function(){
     			}
     			// 목록이 비어있는 경우
           if( empty.value == ""){
-    				empty.value = "SYSTEM: 현재 신청곡 목록이 비어있습니다.";
+    				empty.value = "SYSTEM: 신청곡 목록이 비어있습니다.\n듣고 싶은 곡을 신청해주세요.";
     			}
     			button.click();
     		}
@@ -161,12 +179,17 @@ var callback = function(){
 
         // 다음곡
     		else if(command === "다음곡"){
-    			const[front, ...rest] = allSongs;
-    			currentSong = front;
-    			allSongs = rest;
-    			empty.value = "SYSTEM: 재생중: " + currentSong;
-    			button.click();
-          searchSong();
+          if (allSongs.length == 0){
+            empty.value = "SYSTEM: 신청곡 목록이 비어있습니다.\n듣고 싶은 곡을 신청해주세요."
+          }
+          else{
+      			const[front, ...rest] = allSongs;
+      			currentSong = front;
+      			allSongs = rest;
+      			empty.value = "SYSTEM: 재생중: " + currentSong;
+      			button.click();
+            searchSong();
+          }
     		}
 
         // 현재곡
