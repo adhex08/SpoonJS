@@ -4,16 +4,20 @@ var player;
 
 // Search the song through Youtube API 
 function searchSong(){
+
+  // Extract song name from current list
   var qList = currentSong.split("*");
   var q = qList[0].trim();
-  var key = 'AIzaSyBqEZyAFTL1eEqPSTKVSWEcb1X5LXXmn_A';
 
+  // Prepare various parameters for Youtube API
+  var key = '';
   var requestlink = 'https://content.googleapis.com/youtube/v3/search?';
   var maxResults = "maxResults=3";
   var part = "&part=snippet";
   var qval = "&q=" + q;
   var keyval = "&key=" + key;
 
+  // Search the song on Youtube
   var httpRequest = new XMLHttpRequest;
   httpRequest.open("GET", requestlink+maxResults+part+qval+keyval, false);
   httpRequest.send(null);
@@ -22,32 +26,20 @@ function searchSong(){
   var results = jsonResponse.items;
   console.log(results);
 
-  // // Find input message
-  // var empty = document.querySelector(".input-live-chat");
-      
-  // // Find send button
-  // var button = document.querySelector('[ng-click="addChat()"]');
-
-  // results.forEach(function(thing){
-  //   empty.value = empty.value + thing.snippet.title + "\n";
-  //   // console.log(thing.id.videoId);
-  // })
-
-  // button.click();
-
-  // The number can change according to which youtube video is what you want
+  // Start the first video on Youtube search
   startVideo(results[0].id.videoId);
 
 }
 
+// Start the video
 function startVideo(videoid){
   player.cueVideoById(videoid);
   player.playVideo();
 }
 
+// Load the video player
 function loadPlayer() { 
   if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
-
     var tar = document.createElement("div");
     tar.id = "player";
     document.body.appendChild(tar);
@@ -59,15 +51,12 @@ function loadPlayer() {
     window.onYouTubePlayerAPIReady = function() {
       onYouTubePlayer();
     };
-
   } else {
-
     onYouTubePlayer();
-
   }
 }
 
-      
+// The actual Youtube Player iframe;
 function onYouTubePlayer() {
   player = new YT.Player('player', {
   height: '0',
@@ -81,6 +70,7 @@ function onYouTubePlayer() {
   });
 }
 
+// When the state of the Video player changes, for now when it ends
 function onPlayerStateChange(event) {
   if (event.data === 0){
       // Find input message
@@ -102,24 +92,9 @@ function onPlayerStateChange(event) {
   }
 }
 
+// Placeholder; not sure if necessary
 function onPlayerReady(){
 
-}
-
-// Append frame with youtube video
-function prepareFrame() {
-        var ifrm = document.createElement("iframe");
-        ifrm.setAttribute("src", "https://www.youtube.com/embed/7a-vs1pmNRs?autoplay=1");
-        ifrm.style.width = "640px";
-        ifrm.style.height = "480px";
-        ifrm.id = "currSong";
-        document.body.appendChild(ifrm);
-    }
-
-// Remove frame with youtube video
-function removeFrame() {
-  var elem = document.getElementById("currSong");
-  elem.parentElement.removeChild(elem);
 }
 
 // State observer 
@@ -140,13 +115,8 @@ var callback = function(){
   // Split the inputs
     var inputs = newmessage.split(" ");
 
-  // if(curruser != "휴휴봇4"){
-  //   empty.value = curruser + "님이 말씀하셨습니다.";
-  //   button.click();
-  // }
-
+    // Checks that the chat is special
     if (newmessage.startsWith("@")){
-    	// 짧은 명령어
 
     	if(inputs.length == 1){
 
@@ -170,24 +140,26 @@ var callback = function(){
     			button.click();
     		}
 
-        // 리셋
-    		else if(command === "리셋"){
-    			allSongs = [];
-    			empty.value = "SYSTEM: 신청곡 목록이 리셋되었습니다.";
-    			button.click();
-    		}
+        // Disabled for now 
+      //   // 리셋
+    		// else if(command === "리셋"){
+    		// 	allSongs = [];
+    		// 	empty.value = "SYSTEM: 신청곡 목록이 리셋되었습니다.";
+    		// 	button.click();
+    		// }
 
         // 다음곡
     		else if(command === "다음곡"){
           if (allSongs.length == 0){
             empty.value = "SYSTEM: 신청곡 목록이 비어있습니다.\n듣고 싶은 곡을 신청해주세요."
+            button.click();
           }
           else{
       			const[front, ...rest] = allSongs;
       			currentSong = front;
       			allSongs = rest;
       			empty.value = "SYSTEM: 재생중: " + currentSong;
-      			button.click();
+      			button.click();내
             searchSong();
           }
     		}
@@ -237,25 +209,6 @@ var callback = function(){
     	button.click();
     }
 
-
-  //   if (newmessage.includes("퉷") || newmessage.includes("퉤") || newmessage.includes("톽") || newmessage.includes("퉵")){
-  //   	// Fill input with value
-  //   	empty.value="청소요정 발동! 침을 뱉지 맙시다! 슥삭슥삭!";		
-  //   	// Initiate send 
-		// button.click();
-  //   }
-  //   else if (newmessage == ("@비제이정보")){
-  //   	// Fill input with value
-  //   	empty.value="안녕하세요, 25살 미국에 거주하는 휴휴입니다.";
-  //   	// Initiate send 
-		// button.click();
-  //   }
-  //   else if (newmessage.startsWith("@")){
-  //   	// Fill input with value
-  //   	empty.value="죄송합니다, 명령을 알아듣지 못했습니다.";
-  //   	// Initiate send 
-		// button.click();
-  //   }
 };
 
 // Inject Youtube Player API
@@ -270,3 +223,61 @@ var targetNode = document.querySelector('[ng-class=\"{\'custom-scroll\':isCustom
 
 // Start running the observer
 observer.observe(targetNode, config);
+
+
+// OLD CODE
+
+// // Append frame with youtube video
+// function prepareFrame() {
+//         var ifrm = document.createElement("iframe");
+//         ifrm.setAttribute("src", "https://www.youtube.com/embed/7a-vs1pmNRs?autoplay=1");
+//         ifrm.style.width = "640px";
+//         ifrm.style.height = "480px";
+//         ifrm.id = "currSong";
+//         document.body.appendChild(ifrm);
+//     }
+
+// // Remove frame with youtube video
+// function removeFrame() {
+//   var elem = document.getElementById("currSong");
+//   elem.parentElement.removeChild(elem);
+// }
+
+// // Find input message
+// var empty = document.querySelector(".input-live-chat");
+    
+// // Find send button
+// var button = document.querySelector('[ng-click="addChat()"]');
+
+// results.forEach(function(thing){
+//   empty.value = empty.value + thing.snippet.title + "\n";
+//   // console.log(thing.id.videoId);
+// })
+
+// button.click();
+
+// The number can change according to which youtube video is what you want
+
+// if(curruser != "휴휴봇4"){
+//   empty.value = curruser + "님이 말씀하셨습니다.";
+//   button.click();
+// }
+
+  //   if (newmessage.includes("퉷") || newmessage.includes("퉤") || newmessage.includes("톽") || newmessage.includes("퉵")){
+//    // Fill input with value
+//    empty.value="청소요정 발동! 침을 뱉지 맙시다! 슥삭슥삭!";    
+//    // Initiate send 
+  // button.click();
+//   }
+//   else if (newmessage == ("@비제이정보")){
+//    // Fill input with value
+//    empty.value="안녕하세요, 25살 미국에 거주하는 휴휴입니다.";
+//    // Initiate send 
+  // button.click();
+//   }
+//   else if (newmessage.startsWith("@")){
+//    // Fill input with value
+//    empty.value="죄송합니다, 명령을 알아듣지 못했습니다.";
+//    // Initiate send 
+  // button.click();
+//   }
