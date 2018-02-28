@@ -18,9 +18,13 @@ Part 2:
 Currently, the commands are as follows:
 
 @신청 string // Requests the song by adding the string to the list of songs
-@목록 // Shows all list of songs request 
+
+@목록 // Shows all list of songs request
+
 @현재곡 // Shows what song is playing currently
+
 @다음곡 // Plays the next song in the song list
+
 @리셋 // Resets the entire list 
 
 There are ways to see who typed what chat in the room, but currently the code lacks the ability to distinguish
