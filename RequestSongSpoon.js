@@ -10,7 +10,7 @@ function searchSong(){
   var q = qList[0].trim();
 
   // Prepare various parameters for Youtube API
-  var key = '';
+  var key = 'AIzaSyBqEZyAFTL1eEqPSTKVSWEcb1X5LXXmn_A';
   var requestlink = 'https://content.googleapis.com/youtube/v3/search?';
   var maxResults = "maxResults=3";
   var part = "&part=snippet";
@@ -108,7 +108,26 @@ var callback = function(){
     var users = document.querySelectorAll('[ng-click=\"userProfileHandler(listItem.author.id)\"]');
   // Get all userids
     var curruser = users[users.length-1].textContent.trim();
-	// Find input message
+
+  // Get all privileges
+    var allPerson = document.querySelectorAll("div.text-name.text-box");
+    var lastPerson = allPerson[allPerson.length - 1];
+    var privileges = lastPerson.querySelectorAll(".ng-binding");
+    var privilege = "USER";
+    for (var i = 0; i < 2; i++){
+      if(getComputedStyle(privileges[i]).getPropertyValue("display") == "inline-block"){
+        if(i==0){
+          privilege = "BJ";
+        }
+        else{
+          privilege = "MANAGER";
+        }
+      }
+    }
+
+  console.log(curruser + " " + privilege);
+
+  // Find input message
     var empty = document.querySelector(".input-live-chat");
 	// Find send button
   	var button = document.querySelector('[ng-click="addChat()"]');
@@ -135,23 +154,23 @@ var callback = function(){
     			}
     			// 목록이 비어있는 경우
           if( empty.value == ""){
-    				empty.value = "SYSTEM: 신청곡 목록이 비어있습니다.\n듣고 싶은 곡을 신청해주세요.";
+    				empty.value = "SYSTEM: 신청곡 목록이 비어있습니다.";
     			}
     			button.click();
     		}
 
         // Disabled for now 
-      //   // 리셋
-    		// else if(command === "리셋"){
-    		// 	allSongs = [];
-    		// 	empty.value = "SYSTEM: 신청곡 목록이 리셋되었습니다.";
-    		// 	button.click();
-    		// }
+        // 리셋
+    		else if(command === "리셋" && (privilege === "BJ" || privilege === "MANAGER")){
+    			allSongs = [];
+    			empty.value = "SYSTEM: 신청곡 목록이 리셋되었습니다.";
+    			button.click();
+    		}
 
         // 다음곡
-    		else if(command === "다음곡"){
+    		else if(command === "다음곡" && (privilege === "BJ" || privilege === "MANAGER")){
           if (allSongs.length == 0){
-            empty.value = "SYSTEM: 신청곡 목록이 비어있습니다.\n듣고 싶은 곡을 신청해주세요."
+            empty.value = "SYSTEM: 신청곡 목록이 비어있습니다.";
             button.click();
           }
           else{
@@ -159,7 +178,7 @@ var callback = function(){
       			currentSong = front;
       			allSongs = rest;
       			empty.value = "SYSTEM: 재생중: " + currentSong;
-      			button.click();내
+      			button.click();
             searchSong();
           }
     		}
@@ -171,10 +190,10 @@ var callback = function(){
     		}
 
         // 에러
-    		else{
-    			empty.value = "SYSTEM: 양식이 올바르지 않습니다.\n ?신청곡에서 확인해주세요. ERR:1";
-    			button.click();
-    		}
+    		// else{
+    		// 	empty.value = "SYSTEM: 양식이 올바르지 않습니다.";
+    		// 	button.click();
+    		// }
     	}
 		
       // 실제 신청곡 받는 패턴
@@ -182,7 +201,7 @@ var callback = function(){
         
         // 신청곡 가득 참
         if(allSongs.length == 5){
-          empty.value = "SYSTEM: 현재 신청곡이 가득 차있습니다.\n 다음에 다시 시도해주시길 바랍니다."
+          empty.value = "SYSTEM: 신청곡이 가득 차있습니다.";
           button.click();
         }
 
@@ -190,24 +209,38 @@ var callback = function(){
         else{
           const [command, ...info] = inputs;
           var artistTitle = info.join(' ').trim();
-          allSongs.push(artistTitle + ' *  ' + curruser + "님의 신청곡");
+          allSongs.push(artistTitle + ' *  ' + curruser);
           empty.value = "SYSTEM: 신청곡을 받았습니다.";
           button.click();
         }
       }
 
+      // 곡 취소
+      else if (inputs[0] === "@취소" && inputs.length == 2){
+        console.log("HI");
+        var index = parseInt(inputs[1]);
+
+        if(typeof(index) == intallSongs.length > index && index >= 0){
+          var cancel = allSongs[index - 1];
+          var name = cancel.split("*")[1].trim();
+          if (name == curruser || privilege == "MANAGER" || privilege == "BJ"){
+            allSongs.splice(index - 1, 1);
+          }
+        }
+      }
+
     	// 불가능한 패턴
 		  else {
-    		empty.value = "SYSTEM: 양식이 올바르지 않습니다.\n ?신청곡에서 확인해주세요. ERR:2";
+    		empty.value = "SYSTEM: 양식 -> @신청 \"아티스트 및 제목\"";
     		button.click();
     	}
     }
 
-    // 설명서
-    else if(newmessage == "?신청곡"){
-    	empty.value = "SYSTEM: 다음 양식으로 신청해주세요 (\"\" 없이):\n@신청 \"아티스트 및 제목\""
-    	button.click();
-    }
+    // // 설명서
+    // else if(newmessage == "?신청곡"){
+    // 	empty.value = "SYSTEM: 다음 양식으로 신청해주세요 (\"\" 없이):\n@신청 \"아티스트 및 제목\""
+    // 	button.click();
+    // }
 
 };
 
