@@ -38,7 +38,7 @@ function startVideo(videoid){
 }
 
 // Load the video player
-function loadPlayer() { 
+function loadPlayer() {
   if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
     var tar = document.createElement("div");
     tar.id = "player";
@@ -78,14 +78,14 @@ function onPlayerStateChange(event) {
       // Find send button
       var button = document.querySelector('[ng-click="addChat()"]');
       if (allSongs.length == 0){
-            empty.value = "SYSTEM: 신청곡 목록이 비어있습니다.\n듣고 싶은 곡을 신청해주세요."
+            empty.value = "SYSTEM: 신청곡 목록이 비어있습니다."
             button.click();
       }
       else{
         const[front, ...rest] = allSongs;
         currentSong = front;
         allSongs = rest;
-        empty.value = "SYSTEM: 재생중: " + currentSong;
+        empty.value = "재생중: " + currentSong;
         button.click();
         searchSong();
       }
@@ -94,7 +94,6 @@ function onPlayerStateChange(event) {
 
 // Placeholder; not sure if necessary
 function onPlayerReady(){
-
 }
 
 // State observer 
@@ -124,8 +123,6 @@ var callback = function(){
         }
       }
     }
-
-  console.log(curruser + " " + privilege);
 
   // Find input message
     var empty = document.querySelector(".input-live-chat");
@@ -177,7 +174,7 @@ var callback = function(){
       			const[front, ...rest] = allSongs;
       			currentSong = front;
       			allSongs = rest;
-      			empty.value = "SYSTEM: 재생중: " + currentSong;
+      			empty.value = "재생중: " + currentSong;
       			button.click();
             searchSong();
           }
@@ -185,7 +182,7 @@ var callback = function(){
 
         // 현재곡
     		else if(command === "현재곡"){
-    			empty.value = "SYSTEM: 재생중: " + currentSong;
+    			empty.value = "재생중: " + currentSong;
     			button.click();
     		}
 
@@ -217,14 +214,15 @@ var callback = function(){
 
       // 곡 취소
       else if (inputs[0] === "@취소" && inputs.length == 2){
-        console.log("HI");
-        var index = parseInt(inputs[1]);
+        var index = parseInt(inputs[1]) - 1;
 
-        if(typeof(index) == intallSongs.length > index && index >= 0){
-          var cancel = allSongs[index - 1];
+        if(typeof(index) == "number" && allSongs.length > index && index >= 0){
+          var cancel = allSongs[index];
           var name = cancel.split("*")[1].trim();
           if (name == curruser || privilege == "MANAGER" || privilege == "BJ"){
-            allSongs.splice(index - 1, 1);
+            empty.value = "SYSTEM: " + cancel.split("*")[0] + " 취소";
+            allSongs.splice(index, 1);
+            button.click();
           }
         }
       }
