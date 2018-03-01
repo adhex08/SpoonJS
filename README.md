@@ -15,6 +15,42 @@ Part 2:
   1. Start a livecast with Spoon on some device.
   2. Open up spooncast on a web browser on a computer, and paste the code into the console. 
   
+v 1.5
+
+Currently, the commands are as follows:
+
+ALL USERS
+@신청 string // Requests the song by adding the string to the list of songs
+
+ALL USERS
+@목록 // Shows all list of songs request
+
+ALL USERS
+@현재곡 // Shows what song is playing currently
+
+PRIVILEGED USERS
+@다음곡 // Plays the next song in the song list
+
+PRIVILEGED USERS
+@리셋 // Resets the entire list 
+
+PRIVILEGED USERS OR SONG REQUESTER (ONLY CAN CANCEL SONGS ONE REQUESTED IF NORMAL USER)
+@취소 int // Cancels the nth song in the list given my @목록
+
+
+
+
+
+
+
+
+
+
+
+
+
+v 1.0
+
 Currently, the commands are as follows:
 
 @신청 string // Requests the song by adding the string to the list of songs
