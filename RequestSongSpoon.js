@@ -10,7 +10,7 @@ function searchSong(){
   var q = qList[0].trim();
 
   // Prepare various parameters for Youtube API
-  var key = 'AIzaSyBqEZyAFTL1eEqPSTKVSWEcb1X5LXXmn_A';
+  var key = '';
   var requestlink = 'https://content.googleapis.com/youtube/v3/search?';
   var maxResults = "maxResults=3";
   var part = "&part=snippet";
