@@ -1,4 +1,18 @@
-# SpoonJS
+# CustomSocket
+
+Realized that the chat part of the system, and the most of the interactions are done with realtime application socket.
+
+I had to read through a lot of the websocket structure to understand this.
+
+It is done with the Socket-io.js (?) library, so this code requires using the Snippet function of the chrome to actually usually the code.
+
+As with the other parts, it requires using the console to set up.
+
+It is harder to use this one, but with a basic understanding of the websocket, and how the frames can be observed in the network tabs, 
+it is much more powerful than just simply dissecting the html codes. 
+
+
+# RequestSongSpoon
 Made to fool around with the chat room in Spooncast.net. 
 
 This uses a javascript from the client side to dissect chats based on certain rules, 
