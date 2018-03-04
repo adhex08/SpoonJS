@@ -1,6 +1,9 @@
 var allSongs = [];
 var currentSong = "재생중인 곡 없음"
 var player;
+var DelayMap = new Map();
+var delay_second = 30;
+const API_KEY = "";
 
 // Search the song through Youtube API 
 function searchSong(){
@@ -10,12 +13,11 @@ function searchSong(){
   var q = qList[0].trim();
 
   // Prepare various parameters for Youtube API
-  var key = '';
   var requestlink = 'https://content.googleapis.com/youtube/v3/search?';
   var maxResults = "maxResults=3";
   var part = "&part=snippet";
   var qval = "&q=" + q;
-  var keyval = "&key=" + key;
+  var keyval = "&key=" + API_KEY;
 
   // Search the song on Youtube
   var httpRequest = new XMLHttpRequest;
@@ -96,6 +98,25 @@ function onPlayerStateChange(event) {
 function onPlayerReady(){
 }
 
+function delay(curruser){
+  if(!(DelayMap.has(curruser))){
+    DelayMap.set(curruser, delay_second);
+  }
+}
+
+function delayCount(){
+  DelayMap.forEach(function(value, key){
+    var newval = value - 1;
+    if(newval == 0){
+      DelayMap.delete(key);
+    }
+    else{
+      DelayMap.set(key, newval);
+    }
+  })
+  console.log(DelayMap);
+}
+
 // State observer 
 var callback = function(){
 	
@@ -132,7 +153,11 @@ var callback = function(){
     var inputs = newmessage.split(" ");
 
     // Checks that the chat is special
-    if (newmessage.startsWith("@")){
+    if (newmessage.startsWith("@") && !(DelayMap.has(curruser))){
+
+      if(privilege == "USER" ){
+        delay(curruser);
+      } 
 
     	if(inputs.length == 1){
 
@@ -180,11 +205,29 @@ var callback = function(){
           }
     		}
 
+        else if(command === "재생" && (privilege === "BJ" || privilege === "MANAGER")){
+            if(player.getPlayerState() != 1){
+              player.playVideo();
+            }
+          }
+        
+
+        else if(command === "중지" && (privilege === "BJ" || privilege === "MANAGER")){
+            if(player.getPlayerState() == 1){
+              player.pauseVideo();
+            }
+          }
+        
+
         // 현재곡
     		else if(command === "현재곡"){
     			empty.value = "재생중: " + currentSong;
     			button.click();
     		}
+
+        else{
+          DelayMap.delete(curruser);
+        }
 
         // 에러
     		// else{
@@ -200,6 +243,7 @@ var callback = function(){
         if(allSongs.length == 5){
           empty.value = "SYSTEM: 신청곡이 가득 차있습니다.";
           button.click();
+          DelayMap.delete(curruser);
         }
 
         // 신청곡 성공
@@ -229,8 +273,9 @@ var callback = function(){
 
     	// 불가능한 패턴
 		  else {
-    		empty.value = "SYSTEM: 양식 -> @신청 \"아티스트 및 제목\"";
+    		empty.value = "예시: \"\" 없이 \"@신청 이적 걱정말아요 그대\"";
     		button.click();
+        DelayMap.delete(curruser);
     	}
     }
 
@@ -254,6 +299,8 @@ var targetNode = document.querySelector('[ng-class=\"{\'custom-scroll\':isCustom
 
 // Start running the observer
 observer.observe(targetNode, config);
+
+window.setInterval(delayCount, 1000);
 
 
 // OLD CODE
