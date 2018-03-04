@@ -23,7 +23,7 @@ To allow this JS to work:
 Part 1:
   1. Get Authentication Key for YoutubeData API at Google API.
   (Refer to -> https://developers.google.com/youtube/v3/)
-  2. In the Authentication Key variable, paste the authentication key.
+  2. In the varialbe AUTH_KEY, paste the authentication key.
 
 Part 2:
   1. Start a livecast with Spoon on some device.
