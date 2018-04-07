@@ -24,11 +24,9 @@ var callback = function(){
     var empty = document.querySelector(".input-live-chat");
 	// Find send button
   	var button = document.querySelector('[ng-click="addChat()"]');
+    //empty.value = ""
 
-    console.log(profile);
-    console.log(user);
-    console.log(msg);
-    console.log(privilege);
+    profile.click();
 
 };
 
